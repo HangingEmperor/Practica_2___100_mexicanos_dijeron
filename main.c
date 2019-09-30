@@ -2,15 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wchar.h>
 #include <stddef.h>
 #include <ctype.h>
+#include <wchar.h>
 
 void main() {
-    setlocale(LC_ALL, " ");
+    setlocale(LC_ALL, "");
     int menu, sizePreguntas = 0;
-    //wchar_t preguntas[50] = L"";
-    char preguntas[50][12];
+    wchar_t preguntas[50][12];
     int pass = 0;
 
     do {
@@ -19,7 +18,7 @@ void main() {
         printf("\n Que deseas hacer? \n");
         printf("\n 1 .- Editar Banco de Palabras.");
         printf("\n 2 .- Jugar!");
-        printf("\n 3 .- Salir \n\n ---> Opcion:");
+        printf("\n 3 .- Salir \n\n ---> Opcion: ");
         scanf("%i", &menu);
         while (getchar() != '\n') {};
 
@@ -30,7 +29,7 @@ void main() {
                 printf(" --- 100 Ingenieros Dijeron ---> Editar Banco de Palabras ---");
                 printf("\n 1 .- Llenar Preguntas");
                 printf("\n 2 .- Llenar Respuestas");
-                printf("\n 3 .- Eliminar Oración \n\n ---> Opcion:");
+                printf("\n 3 .- Eliminar Oración \n\n ---> Opcion: ");
                 scanf("%i", &menu);
 
                 switch (menu) {
@@ -46,15 +45,24 @@ void main() {
                                 do {
                                     pass = 0;
                                     printf("\n Ingrese una pregunta para el juego: ");
-                                    scanf("%[^\n]", preguntas[sizePreguntas]);
-                                    printf("%i", preguntas[0][0]);
-                                    for (int i = 0; i < sizeof(preguntas); ++i) {
-                                        if (isxdigit(preguntas[sizePreguntas][i])) {
-                                            printf("1");
+                                    scanf("%l[^\n]", preguntas[sizePreguntas]);
+
+                                    printf("%i", toascii(preguntas[sizePreguntas][0]));
+
+                                    for (int j = 0; j < sizeof(preguntas[sizePreguntas]); ++j) {
+                                        if (preguntas[sizePreguntas][j] != '\0') {
+                                            if (toascii(toupper(preguntas[sizePreguntas][j])) >= 65 ||
+                                                toascii(toupper(preguntas[sizePreguntas][j])) <= 90) {
+                                                printf("hola");
+                                            } else {
+                                                printf(" Se ingreso un caracter invalido... ");
+                                            }
                                         } else {
-                                            printf("0");
+                                            break;
                                         }
                                     }
+
+
                                     sizePreguntas++;
                                 } while (pass);
                             } else {
