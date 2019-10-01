@@ -8,8 +8,15 @@
 
 void main() {
     setlocale(LC_ALL, "");
-    int menu, sizePreguntas = 0;
+    int menu, sizePreguntas = 0, sizeRespuestas = 0;
+    int wasError = 0;
+    int cantidadPreguntas[12];
+
     wchar_t preguntas[50][12];
+    wchar_t respuestas[100][48];
+    wchar_t temporal[50][12];
+
+    int example = 0;
     int pass = 0;
 
     do {
@@ -40,31 +47,35 @@ void main() {
                             while (getchar() != '\n') {};
                             pass = 0;
                             system("clear");
+                            if (wasError) {
+                                printf(" Se ingreso un caracter invalido... \n\n");
+                                printf("error: %i", example);
+                            }
                             printf(" --- 100 Ingenieros Dijeron ---> Editar Banco de Palabras ---> Llenar preguntas ---");
                             if (sizePreguntas < 12) {
-                                do {
-                                    pass = 0;
-                                    printf("\n Ingrese una pregunta para el juego: ");
-                                    scanf("%l[^\n]", preguntas[sizePreguntas]);
+                                printf("\n Ingrese una pregunta para el juego: ");
+                                scanf("%l[^\n]", preguntas[sizePreguntas]);
 
-                                    printf("%i", toascii(preguntas[sizePreguntas][0]));
-
-                                    for (int j = 0; j < sizeof(preguntas[sizePreguntas]); ++j) {
-                                        if (preguntas[sizePreguntas][j] != '\0') {
-                                            if (toascii(toupper(preguntas[sizePreguntas][j])) >= 65 ||
-                                                toascii(toupper(preguntas[sizePreguntas][j])) <= 90) {
-                                                printf("hola");
-                                            } else {
-                                                printf(" Se ingreso un caracter invalido... ");
-                                            }
+                                for (int j = 0; j < sizeof(preguntas[sizePreguntas]); ++j) {
+                                    if (preguntas[sizePreguntas][j] != '\0') {
+                                        if ((toascii(preguntas[sizePreguntas][j]) >= 65 &&
+                                             toascii(preguntas[sizePreguntas][j]) <= 90) ||
+                                            toascii(preguntas[sizePreguntas][j]) == 63 ||
+                                            toascii(preguntas[sizePreguntas][j]) == 32 ||
+                                            (toascii(preguntas[sizePreguntas][j]) >= 97 &&
+                                             toascii(preguntas[sizePreguntas][j]) <= 122)) {
                                         } else {
+                                            pass = 1;
+                                            wasError = 1;
+                                            example = toascii(preguntas[sizePreguntas][j]);
                                             break;
                                         }
+                                    } else {
+                                        sizePreguntas++;
+                                        break;
                                     }
+                                }
 
-
-                                    sizePreguntas++;
-                                } while (pass);
                             } else {
                                 printf("\n Ya has alcanzado el maximo de 12 preguntas. \n");
                             }
@@ -72,18 +83,44 @@ void main() {
                         break;
                         // Llenar respuestas
                     case 2:
-                        /*
-                        do {
-                            pass = 0;
-                            system("clear");
-                            printf(" --- 100 Ingenieros Dijeron ---> Editar Banco de Palabras ---> Llenar preguntas ---");
-                            printf("\n Ingrese una pregunta para el juego: ");
-                            scanf("%ls[^\n]", preguntas);
+                        int posPregunta = 0;
+                        wasError = 0;
+                        if (sizePreguntas > 0) {
+                            do {
+                                pass = 0;
+                                while (getchar() != '\n') {};
+                                system("clear");
+                                if (wasError == 1) {
+                                    printf("No existe la posicion de esa pregunta...");
+                                }
+                                printf(" --- 100 Ingenieros Dijeron ---> Editar Banco de Palabras ---> Llenar preguntas --- \n");
+                                printf(" === Preguntas disponibles: %i === \n\n", sizePreguntas);
 
-                            printf("Pregunta: %ls", preguntas);
-                            while (getchar() != '\n') {};
-                        } while (pass);
-                         */
+                                for (int i = 0; i < sizePreguntas; ++i) {
+                                    printf(" # Pregunta No. %i: ", (i + 1));
+                                    printf("%ls \n", preguntas[i]);
+                                }
+
+                                printf("\n Ingrese el numero de la pregunta que desea colocar respuestas: ");
+                                scanf("%i", posPregunta);
+
+                                if (posPregunta >= 0 && posPregunta <= sizePreguntas) {
+                                    printf("\n\n == Se selecciono la pregunta No. %i: %ls == \n", posPregunta,
+                                           preguntas[posPregunta]);
+                                    printf(" Ingresa una respuesta: ");
+                                    scanf("%l[^\n]", respuestas[sizeRespuestas]);
+
+
+                                } else {
+                                    pass = 1;
+                                    wasError = 1;
+                                }
+                                while (getchar() != '\n') {};
+                            } while (pass);
+                        } else {
+                            printf("\n El banco de preguntas esta vacio... \n");
+                            system("sleep 1");
+                        }
                         break;
                         // Eliminar oracion
                     case 3:
