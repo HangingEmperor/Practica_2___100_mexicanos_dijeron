@@ -11,6 +11,8 @@ void main() {
     int menu, sizePreguntas = 0, sizeRespuestas = 0;
     int wasError = 0;
     int cantidadPreguntas[12];
+    int posPregunta = 0;
+    int ok = 0;
 
     wchar_t preguntas[50][12];
     wchar_t respuestas[100][48];
@@ -83,15 +85,19 @@ void main() {
                         break;
                         // Llenar respuestas
                     case 2:
-                        int posPregunta = 0;
                         wasError = 0;
                         if (sizePreguntas > 0) {
                             do {
                                 pass = 0;
+                                ok = 0;
                                 while (getchar() != '\n') {};
                                 system("clear");
                                 if (wasError == 1) {
-                                    printf("No existe la posicion de esa pregunta...");
+                                    printf("No existe la posicion de esa pregunta...\n");
+                                } else if (wasError == 2) {
+                                    printf("Se ingreso un caracter invalido... \n");
+                                } else if (wasError == 3) {
+                                    printf("No se ingreso el numero ID de pregunta... \n");
                                 }
                                 printf(" --- 100 Ingenieros Dijeron ---> Editar Banco de Palabras ---> Llenar preguntas --- \n");
                                 printf(" === Preguntas disponibles: %i === \n\n", sizePreguntas);
@@ -102,20 +108,47 @@ void main() {
                                 }
 
                                 printf("\n Ingrese el numero de la pregunta que desea colocar respuestas: ");
-                                scanf("%i", posPregunta);
+                                scanf("%i", &posPregunta);
 
                                 if (posPregunta >= 0 && posPregunta <= sizePreguntas) {
+                                    while (getchar() != '\n') {};
                                     printf("\n\n == Se selecciono la pregunta No. %i: %ls == \n", posPregunta,
                                            preguntas[posPregunta]);
                                     printf(" Ingresa una respuesta: ");
                                     scanf("%l[^\n]", respuestas[sizeRespuestas]);
 
+                                    printf("%i\n", toascii(respuestas[sizeRespuestas][0]));
+                                    printf("%li", sizeof(respuestas[sizeRespuestas]));
 
+                                    for (int i = 0; i < sizeof(respuestas[sizeRespuestas]); i++) {
+                                        if (preguntas[sizePreguntas][i] != '\0') {
+                                            if (toascii(respuestas[sizeRespuestas][0]) == 35) {
+                                                ok = 1;
+                                            } else if (ok) {
+                                                if (toascii(respuestas[sizeRespuestas][1]) >= 48 ||
+                                                    toascii(respuestas[sizeRespuestas][1]) <= 57 ||
+                                                    toascii(respuestas[sizeRespuestas][2]) >= 48 ||
+                                                    toascii(respuestas[sizeRespuestas][2]) <= 57) {
+                                                } else {
+                                                    pass = 1;
+                                                    wasError = 3;
+                                                }
+                                            } else {
+                                                pass = 1;
+                                                wasError = 2;
+                                            }
+                                        } else {
+                                            if (i == 0) {
+                                            } else {
+                                                sizeRespuestas++;
+                                            }
+                                            break;
+                                        }
+                                    }
                                 } else {
                                     pass = 1;
                                     wasError = 1;
                                 }
-                                while (getchar() != '\n') {};
                             } while (pass);
                         } else {
                             printf("\n El banco de preguntas esta vacio... \n");
